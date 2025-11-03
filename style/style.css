@@ -204,7 +204,7 @@ body {
 
 .banner {
   position: relative;
-  background-image: url("/pic/3ewLAKn.png");
+  background-image: url("pic/3ewLAKn.png");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -240,7 +240,7 @@ body {
 .bedAdvantage-img {
   max-height: 140px;
   -o-object-fit: cover;
-     object-fit: cover;
+    object-fit: cover;
   margin-bottom: 10px;
 }
 
@@ -545,7 +545,7 @@ body {
   min-height: 300px;
   width: 100%;
   -o-object-fit: cover;
-     object-fit: cover;
+      object-fit: cover;
 }
 
 .productCard a {
