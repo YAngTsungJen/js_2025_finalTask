@@ -88,10 +88,13 @@ function renderCartsList(carts){
                         </div>
                     </td>
                     <td>NT$${thousandsStamp(item.product.price)}</td>
-                    <td>${thousandsStamp(item.quantity)}</td>
+                    <td><button type="button" class="minusEdit" data-id ="${item.id}">-</button>
+                    ${thousandsStamp(item.quantity)}
+                    <button type="button" class="plusEdit" data-id ="${item.id}">+</button>
+                    </td>
                     <td>NT$${thousandsStamp(item.quantity * item.product.price)}</td>
                     <td class="discardBtn">
-                        <a href="#" class="material-icons" data-id ="${item.id}">
+                        <a href="#" class="material-icons delOneProduct" data-id ="${item.id}">
                             clear
                         </a>
                     </td>
@@ -101,6 +104,22 @@ function renderCartsList(carts){
     allPrice.textContent = totalPrice;
 }
 
+    // const id = e.target.getAttribute('data-id');
+    // if(e.target.classList.contains('')){}
+function editCartNum(id,num){
+    axios.patch(`${url}/carts`,{
+        "data": {
+            "id": id,
+            "quantity": num
+        }
+    })
+    .then(res => {
+        console.log(res.data);
+    })
+    .catch(error => {
+        console.log(error);
+    })
+}
 // 點擊加入購物車
 productList.addEventListener('click' ,e => {
     e.preventDefault();
@@ -116,21 +135,16 @@ productList.addEventListener('click' ,e => {
     })
     addCart(productId,cartNum);
 })
-function addCart(id,cartNum){
+function addCart(id,num){
     axios.post(`${url}/carts`,{
         data: {
             productId: id,
-            quantity: cartNum
+            quantity: num
         }
     })
     .then(res => {
         console.log(res.data.carts);
         getCarts();
-        Swal.fire({
-            title: "成功加入購物車!",
-            icon: "success",
-            draggable: true
-        });
     })
     .catch(error => {
         console.log(error);
@@ -189,12 +203,40 @@ function deleteCart(id){
 }
 cartList.addEventListener('click',function(e){
     e.preventDefault();
-    const deleteId = e.target.getAttribute('data-id')
-    if(deleteId === null){
-        return;
+    let id = e.target.getAttribute('data-id');
+    console.log(id);
+    //刪除部分
+    if(e.target.classList.contains('delOneProduct')){
+        deleteCart(id);
     }
-    deleteCart(deleteId);
-})
+    // 修改增加
+    if(e.target.classList.contains('plusEdit')){
+        let edit = {};
+        let productId = '';
+        carts.forEach(item => {
+            if(item.id === id){
+                edit = item;
+                productId = item.product.id;
+            }
+        })
+        let num = edit.quantity + 1;
+        addCart(productId,num);
+    }
+    // 修改減少
+    if(e.target.classList.contains('minusEdit')){
+        let edit = {};
+        let productId = '';
+        carts.forEach(item => {
+            if(item.id === id){
+                edit = item;
+                productId = item.product.id;
+            }
+        })
+        let num = edit.quantity - 1;
+        addCart(productId,num);
+    }
+});
+
 // 點擊傳送訂單
 orderInfoBtn.addEventListener('click',function(e){
     e.preventDefault();
