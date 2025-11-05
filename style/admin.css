@@ -808,3 +808,12 @@ body {
   display: none;
 }
 /*# sourceMappingURL=all.css.map */
+
+.scope{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.allItems{
+  margin-left: 25%;
+}

@@ -1,13 +1,14 @@
 const url = `${originUrl}${apiPath}`;
 const orderList = document.querySelector('.orderList');
 const discardAllBtn = document.querySelector('.discardAllBtn');
-let orders = [];
-function getOrder(){
-    axios.get(`${url}/orders`,{
+const header = {
         headers:{
             authorization: token
         }
-    })
+    }
+let orders = [];
+function getOrder(){
+    axios.get(`${url}/orders`,header)
     .then(res => {
         orders = res.data.orders
         renderOrderList(orders);
@@ -81,11 +82,7 @@ orderList.addEventListener('click',e => {
 })
 //刪除一筆訂單
 function delSingleOrder(id){
-    axios.delete(`${url}/orders/${id}`,{
-        headers:{
-            authorization: token
-        }
-    })
+    axios.delete(`${url}/orders/${id}`,header)
     .then(res => {
         console.log(res.data);
         Swal.fire({
@@ -110,11 +107,7 @@ discardAllBtn.addEventListener('click',e => {
     delAllOrder();
 })
 function delAllOrder(){
-    axios.delete(`${url}/orders`,{
-        headers:{
-            authorization: token
-        }
-    })
+    axios.delete(`${url}/orders`,header)
     .then(res => {
         console.log(res.data);
         Swal.fire({
@@ -146,12 +139,7 @@ function isStatus(status,id){
             id: id,
             paid: newStatus
         }
-    },
-    {
-        headers:{
-            authorization: token
-        }
-    })
+    },header)
     .then(res => {
         console.log(res);
         getOrder();
@@ -177,6 +165,20 @@ init();
 
 // C3.js
 function renderC3(){
+    // 產品類別營收比重
+    let obj2 = {};
+    let ary2 = [];
+    orders.forEach(item => {
+        item.products.forEach(type => {
+            if(obj2[type.category] === undefined){
+                obj2[type.category] =1;
+            }else{
+                obj2[type.category] += 1;
+            }
+        })
+    })
+    ary2 = Object.entries(obj2);
+    // 全品項營收比重
     let obj = {};
     let ary = [];
     orders.forEach(item => {
@@ -201,13 +203,22 @@ function renderC3(){
         ary.splice(3,ary.length-1);
         ary.push(['其他',otherTOtal]);
     }
-    console.log(ary);
     //計算C3 其他項目
 let chart = c3.generate({
-    bindto: '#chart', // HTML 元素綁定
+    bindto: '#chart', // HTML 元素綁定 全品項營收比重
     data: {
         type: "pie",
         columns: ary,
+    },
+    color: {
+        pattern: ["#301E5F","#5434A7","#9D7FEA","#DACBFF"]
+    }
+});
+let chart2 = c3.generate({
+    bindto: '#chart2', // HTML 元素綁定 產品類別營收比重
+    data: {
+        type: "pie",
+        columns: ary2,
     },
     color: {
         pattern: ["#301E5F","#5434A7","#9D7FEA","#DACBFF"]
