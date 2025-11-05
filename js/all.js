@@ -12,6 +12,7 @@ const tradeWay = document.querySelector('#tradeWay')
 const orderInfoBtn =document.querySelector('.orderInfo-btn');
 const orderInfoForm = document.querySelector('.orderInfo-form');
 const inputs = document.querySelectorAll("input[name],select[data=payment]");
+const footerCartList = document.querySelector('.footerCartList');
 let products = [];
 let carts = [];
 let totalPrice = 0;
@@ -68,13 +69,21 @@ function getCarts(){
 }
 // 顯示購物車列表
 function renderCartsList(carts){
+    if(carts.length === 0){
+        cartList.innerHTML = '目前購物車沒有商品';
+        discardAllBtn.classList.add('disabled');
+        allPrice.textContent = totalPrice;
+        return;
+    }else{
+        discardAllBtn.classList.remove('disabled');
+    }
     let str = '';
     carts.forEach(item => {
         str += `               
                 <tr>
                     <td>
                         <div class="cardItem-title">
-                            <img src="https://i.imgur.com/HvT3zlU.png" alt="">
+                            <img src="${item.product.images}" alt="">
                             <p>${item.product.title}</p>
                         </div>
                     </td>
@@ -95,7 +104,7 @@ function renderCartsList(carts){
 // 點擊加入購物車
 productList.addEventListener('click' ,e => {
     e.preventDefault();
-    if(e.target.getAttribute('class') !== 'addCardBtn'){
+    if(e.target.getAttribute('class') !== 'addCardBtn' && e.target.classList.contains('addCardBtn') !== 'addCardBtn'){
         return
     }
     let productId = e.target.getAttribute('data-id');
@@ -223,7 +232,7 @@ orderInfoBtn.addEventListener('click',function(e){
 // 表單驗證
 let constraints = {
     "姓名": {
-        resence:{
+        presence:{
             message: "必填欄位"
         }
     },
@@ -250,11 +259,12 @@ let constraints = {
         }
     }
 }
+
 inputs.forEach( item => {
     item.addEventListener('change', (e) => {
         e.preventDefault();
         item.nextElementSibling.textContent = '';
-        let errorMessage = validate(orderInfoForm , constraints) || '';
+        let errorMessage = validate(orderInfoForm, constraints) || '';
         if(errorMessage){
             Object.keys(errorMessage).forEach(key => {
                 let msg = document.querySelector(`[data-message="${key}"]`);

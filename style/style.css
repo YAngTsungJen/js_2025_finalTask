@@ -834,3 +834,7 @@ body {
   display: none;
 }
 /*# sourceMappingURL=all.css.map */
+
+.disabled{
+  display: none;
+}
