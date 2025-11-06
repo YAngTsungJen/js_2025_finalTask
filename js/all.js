@@ -248,6 +248,10 @@ cartList.addEventListener('click',function(e){
             return
         }
         addCart(productId,num);
+        Toast.fire({
+            icon: "success",
+            title: "已刪除這筆商品"
+        });
     }
 });
 
