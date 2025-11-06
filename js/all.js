@@ -141,6 +141,10 @@ productList.addEventListener('click' ,e => {
         }
     })
     addCart(productId,cartNum);
+    Toast.fire({
+        icon: "success",
+        title: "已加入購物車"
+    });
 })
 function addCart(id,num){
     axios.post(`${url}/carts`,{
