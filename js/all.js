@@ -151,10 +151,6 @@ function addCart(id,num){
     })
     .then(res => {
         getCarts();
-        Toast.fire({
-            icon: "success",
-            title: "已加入購物車"
-        });
     })
     .catch(error => {
         console.log(error);
