@@ -7,6 +7,17 @@ const header = {
         }
     }
 let orders = [];
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+    }
+});
 function getOrder(){
     axios.get(`${url}/orders`,header)
     .then(res => {
@@ -84,7 +95,6 @@ orderList.addEventListener('click',e => {
 function delSingleOrder(id){
     axios.delete(`${url}/orders/${id}`,header)
     .then(res => {
-        console.log(res.data);
         Swal.fire({
             title: "已刪除這筆訂單!",
             icon: "success",
@@ -109,7 +119,6 @@ discardAllBtn.addEventListener('click',e => {
 function delAllOrder(){
     axios.delete(`${url}/orders`,header)
     .then(res => {
-        console.log(res.data);
         Swal.fire({
             title: "訂單已全部刪除!",
             icon: "success",
@@ -131,8 +140,16 @@ function isStatus(status,id){
     let newStatus;
     if(status === 'true'){
         newStatus = false;
+        Toast.fire({
+            icon: "error",
+            title: "這筆訂單未付款"
+        });
     }else{
         newStatus = true;
+        Toast.fire({
+            icon: "success",
+            title: "這筆訂單已付款"
+        });
     }
     axios.put(`${url}/orders`,{
         data: {
@@ -141,13 +158,7 @@ function isStatus(status,id){
         }
     },header)
     .then(res => {
-        console.log(res);
         getOrder();
-        Swal.fire({
-            title: "訂單修改成功!",
-            icon: "success",
-            draggable: true
-        });
     })
     .catch(error => {
         Swal.fire({
