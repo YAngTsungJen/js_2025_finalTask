@@ -141,7 +141,7 @@ function isStatus(status,id){
     if(status === 'true'){
         newStatus = false;
         Toast.fire({
-            icon: "error",
+            icon: "warning",
             title: "這筆訂單未付款"
         });
     }else{
