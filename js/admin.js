@@ -26,9 +26,8 @@ function getOrder(){
         renderC3();
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
@@ -103,9 +102,8 @@ function delSingleOrder(id){
         getOrder();
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
@@ -127,9 +125,8 @@ function delAllOrder(){
         getOrder();
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });

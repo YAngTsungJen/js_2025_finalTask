@@ -36,7 +36,11 @@ function getProduct(){
         renderProduct(products);
     })
     .catch(error => {
-        console.log(error);
+        Swal.fire({
+            title: "資料有誤!" || error.message,
+            icon: "error",
+            draggable: true
+        });
     })
 }
 // 渲染產品列表
@@ -70,9 +74,8 @@ function getCarts(){
         renderCartsList(carts,totalPrice);
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
@@ -124,13 +127,17 @@ function editCartNum(id,num){
     .then(res => {
     })
     .catch(error => {
-        console.log(error);
+        Swal.fire({
+            title: "資料有誤!" || error.message,
+            icon: "error",
+            draggable: true
+        });
     })
 }
 // 點擊加入購物車
 productList.addEventListener('click' ,e => {
     e.preventDefault();
-    if(e.target.getAttribute('class') !== 'addCardBtn' && e.target.classList.contains('addCardBtn') !== 'addCardBtn'){
+    if(e.target.classList.contains('addCardBtn') === 'addCardBtn'){
         return
     }
     let productId = e.target.getAttribute('data-id');
@@ -157,9 +164,8 @@ function addCart(id,num){
         getCarts();
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
@@ -177,9 +183,8 @@ function deleteAllCarts(){
         });
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
@@ -200,21 +205,26 @@ function deleteCart(id){
         });
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
     })
 }
+
+//刪除部分
 cartList.addEventListener('click',function(e){
     e.preventDefault();
     let id = e.target.getAttribute('data-id');
-    //刪除部分
     if(e.target.classList.contains('delOneProduct')){
         deleteCart(id);
     }
+});
+
+cartList.addEventListener('click',function(e){
+    e.preventDefault();
+    let id = e.target.getAttribute('data-id');
     // 修改增加
     if(e.target.classList.contains('plusEdit')){
         let edit = {};
@@ -257,7 +267,7 @@ cartList.addEventListener('click',function(e){
             title: "已刪除這筆商品"
         });
     }
-});
+})
 
 // 點擊傳送訂單
 orderInfoBtn.addEventListener('click',function(e){
@@ -351,9 +361,8 @@ function sendOrder(obj){
         });
     })
     .catch(error => {
-        console.log(error);
         Swal.fire({
-            title: "資料有誤!",
+            title: "資料有誤!" || error.message,
             icon: "error",
             draggable: true
         });
