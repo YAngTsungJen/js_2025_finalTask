@@ -174,18 +174,18 @@ init();
 // C3.js
 function renderC3(){
     // 產品類別營收比重
-    let obj2 = {};
-    let ary2 = [];
+    let objCategory = {};
+    let aryCategory = [];
     orders.forEach(item => {
         item.products.forEach(type => {
-            if(obj2[type.category] === undefined){
-                obj2[type.category] =1;
+            if(objCategory[type.category] === undefined){
+                objCategory[type.category] =1;
             }else{
-                obj2[type.category] += 1;
+                objCategory[type.category] += 1;
             }
         })
     })
-    ary2 = Object.entries(obj2);
+    aryCategory = Object.entries(objCategory);
     // 全品項營收比重
     let obj = {};
     let ary = [];
@@ -226,7 +226,7 @@ let chart2 = c3.generate({
     bindto: '#chart2', // HTML 元素綁定 產品類別營收比重
     data: {
         type: "pie",
-        columns: ary2,
+        columns: aryCategory,
     },
     color: {
         pattern: ["#301E5F","#5434A7","#9D7FEA","#DACBFF"]
