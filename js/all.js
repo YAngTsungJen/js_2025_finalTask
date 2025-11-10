@@ -117,14 +117,15 @@ function renderCartsList(carts){
     cartList.innerHTML = str;
     allPrice.textContent = totalPrice;
 }
-function editCartNum(id,num){
+// 修改增加、修改減少
+function editCartNum(edit){
     axios.patch(`${url}/carts`,{
-        "data": {
-            "id": id,
-            "quantity": num
-        }
+        "data": edit
     })
     .then(res => {
+        carts = res.data.carts;
+        totalPrice = `NT$${thousandsStamp(res.data.finalTotal)}`;
+        renderCartsList(carts,totalPrice);
     })
     .catch(error => {
         Swal.fire({
@@ -134,10 +135,55 @@ function editCartNum(id,num){
         });
     })
 }
+cartList.addEventListener('click',function(e){
+    e.preventDefault();
+    let cartId = e.target.getAttribute('data-id');
+    let edit = {
+        id: '',
+        quantity: 0
+        
+    };
+    // 修改增加
+    if(e.target.classList.contains('plusEdit')){
+        carts.forEach(item => {
+            if(item.id === cartId){
+                edit.id = item.id;
+                edit.quantity = item.quantity+1;
+            }
+        })
+        editCartNum(edit);
+        Toast.fire({
+            icon: "success",
+            title: "已加入購物車"
+        });
+    }
+    // 修改減少
+    if(e.target.classList.contains('minusEdit')){
+        carts.forEach(item => {
+            if(item.id === cartId){
+                edit.id = item.id;
+                edit.quantity = item.quantity-1;
+            }
+        })
+        if(edit.quantity < 1){
+            Swal.fire({
+                title: "至少要有一筆訂單!",
+                icon: "error",
+                draggable: true
+            });
+            return
+        }
+        editCartNum(edit);
+        Toast.fire({
+            icon: "success",
+            title: "已刪除這筆商品"
+        });
+    }
+})
 // 點擊加入購物車
 productList.addEventListener('click' ,e => {
     e.preventDefault();
-    if(e.target.classList.contains('addCardBtn') === 'addCardBtn'){
+    if(!e.target.classList.contains('addCardBtn')){
         return
     }
     let productId = e.target.getAttribute('data-id');
@@ -161,7 +207,9 @@ function addCart(id,num){
         }
     })
     .then(res => {
-        getCarts();
+        carts = res.data.carts;
+        totalPrice = `NT$${thousandsStamp(res.data.finalTotal)}`;
+        renderCartsList(carts,totalPrice);
     })
     .catch(error => {
         Swal.fire({
@@ -175,7 +223,9 @@ function addCart(id,num){
 function deleteAllCarts(){
     axios.delete(`${url}/carts`)
     .then(res => {
-        getCarts();
+        carts = res.data.carts;
+        totalPrice = `NT$${thousandsStamp(res.data.finalTotal)}`;
+        renderCartsList(carts,totalPrice);
         Swal.fire({
             title: "全部資料已經刪除!",
             icon: "success",
@@ -198,7 +248,9 @@ discardAllBtn.addEventListener('click',function(e){
 function deleteCart(id){
     axios.delete(`${url}/carts/${id}`)
     .then(res => {
-        getCarts();
+        carts = res.data.carts;
+        totalPrice = `NT$${thousandsStamp(res.data.finalTotal)}`;
+        renderCartsList(carts,totalPrice);
         Toast.fire({
             icon: "success",
             title: "這筆商品已刪除"
@@ -221,53 +273,6 @@ cartList.addEventListener('click',function(e){
         deleteCart(id);
     }
 });
-
-cartList.addEventListener('click',function(e){
-    e.preventDefault();
-    let id = e.target.getAttribute('data-id');
-    // 修改增加
-    if(e.target.classList.contains('plusEdit')){
-        let edit = {};
-        let productId = '';
-        carts.forEach(item => {
-            if(item.id === id){
-                edit = item;
-                productId = item.product.id;
-            }
-        })
-        let num = edit.quantity + 1;
-        addCart(productId,num);
-        Toast.fire({
-            icon: "success",
-            title: "已加入購物車"
-        });
-    }
-    // 修改減少
-    if(e.target.classList.contains('minusEdit')){
-        let edit = {};
-        let productId = '';
-        carts.forEach(item => {
-            if(item.id === id){
-                edit = item;
-                productId = item.product.id;
-            }
-        })
-        let num = edit.quantity - 1;
-        if(num < 1){
-            Swal.fire({
-                title: "至少要有一筆訂單!",
-                icon: "error",
-                draggable: true
-            });
-            return
-        }
-        addCart(productId,num);
-        Toast.fire({
-            icon: "success",
-            title: "已刪除這筆商品"
-        });
-    }
-})
 
 // 點擊傳送訂單
 orderInfoBtn.addEventListener('click',function(e){
